@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 /**
  * Created by pedroxs on 01/09/15.
  */
@@ -21,6 +23,11 @@ public class MessageController {
         return messageService.produceMessage();
     }
 
+    @RequestMapping("/remote-message")
+    public Message remoteShout() throws IOException {
+        return messageService.produceRemoteMessage();
+    }
+
     @RequestMapping("/rule")
     public String changeRules(@RequestParam("version") Integer version) {
 
@@ -29,10 +36,12 @@ public class MessageController {
         switch (version) {
             case 1:
                 messageService.setRuleUrl("shipping-rules-0.1.0.jar");
+                messageService.setRuleFile("shipping-rules-0.1.0.jar");
                 result = String.format("Rule version %d applied!", version);
                 break;
             case 2:
                 messageService.setRuleUrl("shipping-rules-0.2.0.jar");
+                messageService.setRuleFile("shipping-rules-0.2.0.jar");
                 result = String.format("Rule version %d applied!", version);
                 break;
             default:
@@ -44,6 +53,6 @@ public class MessageController {
 
     @RequestMapping("/version")
     public String currentRule() {
-        return messageService.getRuleUrl();
+        return String.format("Url version: %s \r\nFile version: %s", messageService.getRuleUrl(), messageService.getRuleFile());
     }
 }
