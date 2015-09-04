@@ -1,4 +1,4 @@
-package com.netshoes.shipping_rules;
+package com.netshoes.inka.fact;
 
 import java.io.Serializable;
 

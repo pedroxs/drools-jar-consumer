@@ -1,7 +1,7 @@
 package com.netshoes.inka.web;
 
 import com.netshoes.inka.service.MessageService;
-import com.netshoes.shipping_rules.Message;
+import com.netshoes.inka.fact.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,25 +30,10 @@ public class MessageController {
 
     @RequestMapping("/rule")
     public String changeRules(@RequestParam("version") Integer version) {
-
-        String result;
-
-        switch (version) {
-            case 1:
-                messageService.setRuleUrl("shipping-rules-0.1.0.jar");
-                messageService.setRuleFile("shipping-rules-0.1.0.jar");
-                result = String.format("Rule version %d applied!", version);
-                break;
-            case 2:
-                messageService.setRuleUrl("shipping-rules-0.2.0.jar");
-                messageService.setRuleFile("shipping-rules-0.2.0.jar");
-                result = String.format("Rule version %d applied!", version);
-                break;
-            default:
-                result = String.format("No rule version %d found!", version);
-        }
-
-        return result;
+        String fileName = "shipping-rules-0.1.%d.jar";
+        messageService.setRuleUrl(String.format(fileName, version));
+        messageService.setRuleFile(String.format(fileName, version));
+        return String.format("Rule version %d applied!", version);
     }
 
     @RequestMapping("/version")

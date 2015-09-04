@@ -1,6 +1,6 @@
 package com.netshoes.inka.service;
 
-import com.netshoes.shipping_rules.Message;
+import com.netshoes.inka.fact.Message;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
