@@ -1,5 +1,12 @@
 # Drools with dynamic rules
 
+## Tests run:
+
+* [2000 rules and 2000 users in 15 minutes](results/droolsjarconsumersimulation-1441384352090/index.html)
+* [1000 rules and 10000 users in 60 minutes](results/droolsjarconsumersimulation-1441390352399/index.html)
+* [1000 rules and 10000 users in 6 hours](results/droolsjarconsumersimulation-1441772741753/index.html)
+
+
 ### Run with docker
 
 From the root folder execute the following:
