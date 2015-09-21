@@ -1,0 +1,5 @@
+# Spring configs
+spring:
+  main.show_banner: false
+  jackson.serialization:
+    WRITE_DATES_AS_TIMESTAMPS: false

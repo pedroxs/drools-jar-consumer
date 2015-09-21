@@ -1,12 +1,14 @@
 package com.netshoes.inka.service;
 
 import com.netshoes.inka.fact.Message;
+import com.netshoes.inka.model.RuleControl;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -18,12 +20,13 @@ import java.io.InputStream;
 @Service
 public class MessageService {
 
-    private String baseUrl = "https://github.com/pedroxs/drools-jar-consumer/blob/master/src/main/resources/rules/";
-    private String urlRaw = "?raw=true";
-    private String ruleUrl = baseUrl + "shipping-rules-0.1.0.jar" + urlRaw;
+    private static final String baseUrl = "https://github.com/pedroxs/drools-jar-consumer/blob/master/src/main/resources/rules/";
+    private static final String urlRaw = "?raw=true";
 
-    private String basePath = "/opt/rules/";
-    private String ruleFile = basePath + "shipping-rules-0.1.0.jar";
+    private static final String basePath = "/opt/rules/";
+
+    @Autowired
+    private RuleControlerService ruleControlerService;
 
     public Message produceMessage() {
         KieSession kieSession = createKieSession();
@@ -36,7 +39,7 @@ public class MessageService {
 
     private KieSession createKieSession() {
         KieServices ks = KieServices.Factory.get();
-        Resource resource = ks.getResources().newFileSystemResource(ruleFile);
+        Resource resource = ks.getResources().newFileSystemResource(getRuleFile());
         KieRepository kr = ks.getRepository();
         KieModule km = kr.addKieModule(resource);
         KieContainer kc = ks.newKieContainer(km.getReleaseId());
@@ -44,11 +47,12 @@ public class MessageService {
     }
 
     public String getRuleFile() {
-        return ruleFile.substring(basePath.length());
+        return basePath + currentVersion();
     }
 
-    public void setRuleFile(String ruleFile) {
-        this.ruleFile = basePath + ruleFile;
+    //TODO: cache
+    private String currentVersion() {
+        return ruleControlerService.getActiveRule().orElseThrow(() -> new RuntimeException("No active rule defined!")).getVersion();
     }
 
     public Message produceRemoteMessage() throws IOException {
@@ -62,7 +66,7 @@ public class MessageService {
 
     private KieSession createRemoteKieSession() throws IOException {
         KieServices ks = KieServices.Factory.get();
-        Resource resource = ks.getResources().newUrlResource(ruleUrl);
+        Resource resource = ks.getResources().newUrlResource(getRuleUrl());
         InputStream inputStream = resource.getInputStream();
         KieRepository kr = ks.getRepository();
         KieModule km = kr.addKieModule(ks.getResources().newInputStreamResource(inputStream));
@@ -71,10 +75,7 @@ public class MessageService {
     }
 
     public String getRuleUrl() {
-        return ruleUrl.substring(baseUrl.length(), ruleUrl.length() - urlRaw.length());
+        return baseUrl + currentVersion() + urlRaw;
     }
 
-    public void setRuleUrl(String ruleUrl) {
-        this.ruleUrl = baseUrl + ruleUrl + urlRaw;
-    }
 }

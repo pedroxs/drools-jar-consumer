@@ -15,6 +15,8 @@ From the root folder execute the following:
 mvn clean package
 
 docker run -d --name sample-drools -v $(pwd)/target:/opt/sample -v $(pwd)/src/main/resources/rules/:/opt/rules tifayuki/java:8 java -jar /opt/sample/drools-jar-consumer-0.0.1-SNAPSHOT.jar
+
+docker run -d --volumes-from=rules --link=mongo:mongo -e spring.data.mongodb.uri=mongodb://mongo/test --name drools-consumer pedroxs/drools-consumer:0.1.0
 ```
 
 Discover the container IP:
