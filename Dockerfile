@@ -1,4 +1,5 @@
-FROM tifayuki/java:8
+#FROM tifayuki/java:8
+FROM pedroxs/drools-rules:0.1.0
 
 COPY target /opt/consumer
 
